@@ -1,0 +1,19 @@
+# Dipendenze
+node_modules/
+
+# Build e cache
+dist/
+.vite/
+*.tsbuildinfo
+
+# Log
+npm-debug.log*
+
+# Editor e sistema
+.vscode/
+.idea/
+.DS_Store
+
+# Variabili d'ambiente
+.env
+.env.*
