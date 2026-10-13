@@ -1,22 +1,33 @@
+import * as m from "motion/react-m";
 import type { ReactNode } from "react";
-import { Reveal } from "./Reveal";
+import { easeOut } from "../../lib/motion";
 
 type SectionHeadingProps = {
   children: ReactNode;
-  eyebrow?: string;
+  id?: string;
   className?: string;
 };
 
-/** Titolo di sezione standard. L'eyebrow è opzionale: usalo con parsimonia. */
-export function SectionHeading({ children, eyebrow, className = "" }: SectionHeadingProps) {
+/**
+ * Titolo di sezione che sale da una maschera quando entra nel viewport.
+ * L'osservatore sta sull'h2: lo span è nascosto dalla maschera e non verrebbe mai "visto".
+ */
+export function SectionHeading({ children, id, className = "" }: SectionHeadingProps) {
   return (
-    <Reveal className={className}>
-      {eyebrow && (
-        <p className="mb-4 font-mono text-xs uppercase tracking-[0.18em] text-muted">{eyebrow}</p>
-      )}
-      <h2 className="font-display text-4xl font-semibold leading-[1.02] tracking-tight md:text-6xl">
+    <m.h2
+      id={id}
+      initial="hidden"
+      whileInView="shown"
+      viewport={{ once: true, amount: 0.6 }}
+      className={`overflow-hidden pb-[0.08em] text-[clamp(2.1rem,4.8vw,3.6rem)] font-extrabold leading-[1.02] tracking-[-0.025em] font-stretch-[118%] ${className}`}
+    >
+      <m.span
+        className="block text-balance"
+        variants={{ hidden: { y: "105%" }, shown: { y: 0 } }}
+        transition={{ duration: 0.8, ease: easeOut }}
+      >
         {children}
-      </h2>
-    </Reveal>
+      </m.span>
+    </m.h2>
   );
 }

@@ -1,99 +1,124 @@
-import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
-import { ArrowDown, ArrowUpRight } from "@phosphor-icons/react";
+import { useScroll, useTransform } from "motion/react";
+import * as m from "motion/react-m";
+import { useRef, type ReactNode } from "react";
+import { ArrowDown } from "@phosphor-icons/react/dist/csr/ArrowDown";
+import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
+import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { cta, profile } from "../../content";
 import { easeOut } from "../../lib/motion";
 import { Button } from "../ui/Button";
+import { CodeWindow } from "../ui/CodeWindow";
+import { KineticGrid } from "../ui/KineticGrid";
+import { ScrambleText } from "../ui/ScrambleText";
+import { TiltCard } from "../ui/TiltCard";
 
-/** Lettere che salgono da una maschera, una dopo l'altra. */
-function MaskedWord({ word, delay }: { word: string; delay: number }) {
+const [firstName, lastName] = profile.name.split(" ");
+
+/** Lettere che salgono da una maschera, una dopo l'altra. Solo per il nome: è breve. */
+function RisingWord({ word, delay }: { word: string; delay: number }) {
   return (
-    <span className="block overflow-hidden whitespace-nowrap pb-[0.08em]" aria-hidden>
-      {word.split("").map((char, i) => (
-        <motion.span
+    <span aria-hidden className="block overflow-hidden whitespace-nowrap pb-[0.06em]">
+      {Array.from(word, (char, i) => (
+        <m.span
           key={i}
           className="inline-block"
           initial={{ y: "110%" }}
           animate={{ y: 0 }}
-          transition={{ duration: 0.9, ease: easeOut, delay: delay + i * 0.035 }}
+          transition={{ duration: 0.9, ease: easeOut, delay: delay + i * 0.03 }}
         >
           {char}
-        </motion.span>
+        </m.span>
       ))}
     </span>
+  );
+}
+
+function FadeUp({ children, delay, className }: { children: ReactNode; delay: number; className?: string }) {
+  return (
+    <m.div
+      className={className}
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.7, ease: easeOut, delay }}
+    >
+      {children}
+    </m.div>
   );
 }
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const imageScale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "12%"]);
-
-  const [first, last] = profile.name.split(" ");
+  // Uscendo dalla vista il nome sale più lento della pagina e si attenua: profondità senza distrarre.
+  const nameY = useTransform(scrollYProgress, [0, 1], ["0%", "35%"]);
+  const nameOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.15]);
 
   return (
-    <section
-      id="top"
-      ref={ref}
-      className="mx-auto grid min-h-[100dvh] max-w-7xl items-center gap-12 px-4 pb-16 pt-28 md:px-6 lg:grid-cols-12 lg:gap-8 lg:pt-24"
-    >
-      <div className="lg:col-span-7">
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: easeOut, delay: 0.3 }}
-          className="mb-6 font-mono text-xs uppercase tracking-[0.18em] text-muted"
-        >
-          {profile.role}
-        </motion.p>
+    <section id="top" ref={ref} className="relative isolate overflow-hidden">
+      {/* La griglia sfuma verso i bordi così la sezione si fonde con il resto della pagina. */}
+      <KineticGrid className="-z-10 [mask-image:radial-gradient(ellipse_80%_75%_at_50%_40%,black_35%,transparent_100%)]" />
+      <div className="@container mx-auto max-w-7xl px-4 pb-20 pt-28 md:px-6 md:pb-28 md:pt-36">
+        <FadeUp delay={0.2} className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.9375rem] text-muted">
+          <span>
+            <ScrambleText text={profile.role} delay={250} duration={1000} />, {profile.base}
+          </span>
+          <span className="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3 py-1 font-medium text-accent">
+            <span aria-hidden className="size-1.5 rounded-full bg-accent" />
+            {profile.availability}
+          </span>
+        </FadeUp>
 
-        <h1
-          className="font-display text-[clamp(3rem,6.3vw,6rem)] font-bold leading-[0.95] tracking-[-0.035em]"
+        {/*
+        Dimensione legata alla larghezza della colonna (cqi), non della finestra: la colonna smette di crescere
+        a max-w-7xl, la finestra no. "Konstantinos" occupa circa 8,3 volte la dimensione del font, quindi
+        11,8cqi lo tiene sempre dentro con un piccolo margine. Se cambi il nome, ricalcola questo valore.
+      */}
+      <m.h1
           aria-label={profile.name}
+          style={{ y: nameY, opacity: nameOpacity }}
+          className="mt-6 text-[min(11.8cqi,9.5rem)] font-black leading-[0.86] tracking-[-0.035em] font-stretch-[125%]"
         >
-          <MaskedWord word={first} delay={0.4} />
-          <MaskedWord word={last} delay={0.65} />
-        </h1>
+          <RisingWord word={firstName} delay={0.3} />
+          <RisingWord word={lastName} delay={0.5} />
+        </m.h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: easeOut, delay: 1.1 }}
-          className="mt-8 max-w-[38ch] text-lg leading-relaxed text-muted md:text-xl"
-        >
-          {profile.intro}
-        </motion.p>
+        <div className="mt-14 grid items-start gap-12 md:mt-20 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-5 lg:pt-4">
+            <FadeUp delay={0.9}>
+              <p className="max-w-[40ch] text-lg leading-relaxed text-muted md:text-xl">{profile.intro}</p>
+            </FadeUp>
+            <FadeUp delay={1.05} className="mt-9 flex flex-wrap items-center gap-3">
+              <Button href="#contatti" icon={ArrowUpRight}>
+                {cta.contact}
+              </Button>
+              {profile.cvUrl ? (
+                <Button href={profile.cvUrl} download variant="ghost" icon={DownloadSimple}>
+                  {cta.cv}
+                </Button>
+              ) : (
+                <Button href="#esperienza" variant="ghost" icon={ArrowDown}>
+                  {cta.experience}
+                </Button>
+              )}
+            </FadeUp>
+          </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: easeOut, delay: 1.25 }}
-          className="mt-10 flex flex-wrap items-center gap-3"
-        >
-          <Button href="#contatti" icon={ArrowUpRight} magnetic>
-            {cta.contact}
-          </Button>
-          <Button href="#esperienza" variant="ghost" icon={ArrowDown}>
-            {cta.experience}
-          </Button>
-        </motion.div>
+          <m.div
+            className="min-w-0 lg:col-span-7"
+            initial={{ opacity: 0, y: 40, rotateX: 8 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            transition={{ duration: 1.1, ease: easeOut, delay: 0.75 }}
+            style={{ transformPerspective: 1200 }}
+          >
+            <TiltCard className="rounded-2xl" max={5}>
+              <CodeWindow />
+            </TiltCard>
+          </m.div>
+        </div>
+        <FadeUp delay={1.6} className="mt-10 hidden text-sm text-muted [@media(hover:hover)]:block">
+          Muovi il cursore sulla griglia, clicca per mandare un'onda.
+        </FadeUp>
       </div>
-
-      <motion.div
-        initial={{ clipPath: "inset(100% 0% 0% 0% round 28px)" }}
-        animate={{ clipPath: "inset(0% 0% 0% 0% round 28px)" }}
-        transition={{ duration: 1.4, ease: easeOut, delay: 0.5 }}
-        className="relative aspect-[4/5] max-h-[72dvh] w-full overflow-hidden rounded-[28px] bg-surface-2 lg:col-span-5"
-      >
-        <motion.img
-          src={profile.heroImage}
-          alt="Postazione di lavoro con portatile e taccuino"
-          style={{ scale: imageScale, y: imageY }}
-          className="size-full object-cover"
-          fetchPriority="high"
-        />
-      </motion.div>
     </section>
   );
 }

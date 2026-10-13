@@ -14,13 +14,13 @@ type FieldProps = BaseProps &
   );
 
 const inputClasses =
-  "w-full rounded-2xl border bg-surface px-4 py-3.5 text-fg placeholder:text-muted/80 transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-accent";
+  "w-full rounded-xl border bg-surface px-4 py-3 text-fg placeholder:text-muted/80 transition-colors focus:outline-none focus-visible:outline-2 focus-visible:outline-accent";
 
 /** Campo di form: etichetta sopra, suggerimento ed errore sotto. */
 export function Field(props: FieldProps) {
   const { id, label, error, hint, multiline, ...rest } = props;
   const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
-  const border = error ? "border-accent" : "border-line hover:border-fg/30";
+  const border = error ? "border-danger" : "border-line hover:border-fg/30";
 
   return (
     <div className="flex flex-col gap-2">
@@ -45,7 +45,7 @@ export function Field(props: FieldProps) {
         />
       )}
       {error ? (
-        <p id={`${id}-error`} className="text-sm text-accent">
+        <p id={`${id}-error`} className="text-sm text-danger">
           {error}
         </p>
       ) : (

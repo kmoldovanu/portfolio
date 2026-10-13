@@ -25,13 +25,15 @@ export function useTheme() {
   }, [theme]);
 
   const toggle = () => {
-    const next = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      /* storage non disponibile: il tema vale solo per questa visita */
-    }
+    setTheme((current) => {
+      const next = current === "dark" ? "light" : "dark";
+      try {
+        localStorage.setItem(STORAGE_KEY, next);
+      } catch {
+        /* storage non disponibile: il tema vale solo per questa visita */
+      }
+      return next;
+    });
   };
 
   return { theme, toggle };

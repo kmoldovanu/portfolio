@@ -4,13 +4,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "check-node": "node -e \"const [a,b]=process.versions.node.split('.').map(Number);if(a<20||(a===20&&b<19)){console.error('Serve Node 20.19 o superiore (ora: '+process.version+'). Esegui: nvm use');process.exit(1)}\"",
+    "predev": "npm run check-node --silent",
+    "prebuild": "npm run check-node --silent",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
-    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource-variable/geist-mono": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "motion": "^13.4.4",
@@ -25,5 +27,8 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.1"
+  },
+  "engines": {
+    "node": ">=20.19"
   }
 }

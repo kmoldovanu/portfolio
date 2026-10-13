@@ -1,184 +1,116 @@
-import { AnimatePresence, motion, useMotionTemplate, useMotionValue } from "motion/react";
-import { useState, type MouseEvent, type ReactNode } from "react";
-import { Heart } from "@phosphor-icons/react";
-import { headings, skillAreas } from "../../content";
+import * as m from "motion/react-m";
+import { headings, skillAreas, strengths, yearsScale } from "../../content";
 import { easeOut } from "../../lib/motion";
 import { Reveal } from "../ui/Reveal";
-import { BrandLogo } from "../ui/BrandLogo";
 import { SectionHeading } from "../ui/SectionHeading";
+import { TiltCard } from "../ui/TiltCard";
 
-type Area = (typeof skillAreas)[number];
-
-function area(id: string): Area {
-  const found = skillAreas.find((a) => a.id === id);
-  if (!found) throw new Error(`Area di competenza mancante in content.ts: ${id}`);
-  return found;
-}
-
-/** Cella della griglia con un alone che segue il cursore. */
-function SpotlightCell({ children, className = "" }: { children: ReactNode; className?: string }) {
-  const mx = useMotionValue(-400);
-  const my = useMotionValue(-400);
-  const glow = useMotionTemplate`radial-gradient(420px circle at ${mx}px ${my}px, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%)`;
-
-  const handleMove = (e: MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mx.set(e.clientX - rect.left);
-    my.set(e.clientY - rect.top);
-  };
-
+/** Barra degli anni: si riempie quando la riga entra in vista. */
+function YearsMeter({ years, delay }: { years: number; delay: number }) {
   return (
-    <div
-      onMouseMove={handleMove}
-      className={`relative isolate flex h-full flex-col overflow-hidden rounded-[28px] border border-line p-7 md:p-9 ${className}`}
-    >
-      <motion.div aria-hidden className="pointer-events-none absolute inset-0 -z-10" style={{ background: glow }} />
-      {children}
-    </div>
-  );
-}
-
-/** Anni di esperienza in evidenza: il dato che un selezionatore cerca per primo. */
-function Years({ area, light = false }: { area: Area; light?: boolean }) {
-  return (
-    <p className="mb-auto flex items-baseline gap-3 pb-10">
-      <span className={`font-display text-7xl font-semibold leading-none tracking-tight ${light ? "text-white" : "text-accent"}`}>
-        {area.years}
+    <div className="flex items-center gap-3">
+      <span aria-hidden className="h-2 w-28 overflow-hidden rounded-full bg-fg/10">
+        <m.span
+          className="block h-full origin-left rounded-full bg-accent"
+          style={{ width: `${(years / yearsScale) * 100}%` }}
+          variants={{ off: { scaleX: 0 }, on: { scaleX: 1 } }}
+          transition={{ duration: 0.9, ease: easeOut, delay: delay + 0.15 }}
+        />
       </span>
-      <span className={`text-sm ${light ? "text-white/80" : "text-muted"}`}>
-        {area.years === 1 ? "anno" : "anni"} {area.yearsLabel}
+      <span className="text-[0.9375rem] font-semibold tabular-nums">
+        {years} {years === 1 ? "anno" : "anni"}
       </span>
-    </p>
-  );
-}
-
-function AreaText({ area, light = false }: { area: Area; light?: boolean }) {
-  return (
-    <>
-      <h3 className="font-display text-3xl font-semibold tracking-tight">{area.title}</h3>
-      <p className={`mt-3 max-w-[40ch] leading-relaxed ${light ? "text-white/80" : "text-muted"}`}>{area.body}</p>
-      <ul className="mt-6 flex flex-wrap gap-2">
-        {area.tools.map((tool) => (
-          <li
-            key={tool}
-            className={`rounded-full px-3 py-1 font-mono text-xs ${light ? "bg-white/15 text-white" : "bg-surface-2 text-muted"}`}
-          >
-            {tool}
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-}
-
-/** Demo reale: un click aggiorna solo il pezzo di pagina interessato, come farebbe htmx. */
-function HtmxDemo() {
-  const [likes, setLikes] = useState(12);
-  const [liked, setLiked] = useState(false);
-
-  const toggle = () => {
-    setLiked(!liked);
-    setLikes((n) => (liked ? n - 1 : n + 1));
-  };
-
-  return (
-    <div className="mt-8 rounded-2xl bg-surface-2 p-4">
-      <code className="block overflow-x-auto whitespace-nowrap font-mono text-xs text-muted">
-        {'<button hx-post="/like" hx-swap="outerHTML">'}
-      </code>
-      <button
-        type="button"
-        onClick={toggle}
-        aria-pressed={liked}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm transition-transform active:scale-[0.96]"
-      >
-        <motion.span animate={liked ? { scale: [1, 1.35, 1] } : { scale: 1 }} transition={{ duration: 0.35 }}>
-          <Heart size={16} weight={liked ? "fill" : "regular"} className={liked ? "text-accent" : ""} />
-        </motion.span>
-        <span className="relative inline-flex h-5 w-6 overflow-hidden font-mono tabular-nums">
-          <AnimatePresence mode="popLayout" initial={false}>
-            <motion.span
-              key={likes}
-              initial={{ y: liked ? 16 : -16, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: liked ? -16 : 16, opacity: 0 }}
-              transition={{ duration: 0.3, ease: easeOut }}
-            >
-              {likes}
-            </motion.span>
-          </AnimatePresence>
-        </span>
-      </button>
     </div>
   );
 }
 
 export function Skills() {
-  const backend = area("backend");
-  const frontend = area("frontend");
-  const hypermedia = area("hypermedia");
-  const basi = area("basi");
-  const server = area("server");
-
   return (
-    <section id="competenze" className="mx-auto max-w-7xl px-4 py-24 md:px-6 md:py-32">
-      <SectionHeading eyebrow={headings.skillsEyebrow} className="max-w-3xl">
-        {headings.skills}
-      </SectionHeading>
+    <section id="competenze" aria-labelledby="competenze-titolo" className="border-y border-line bg-surface">
+      <div className="mx-auto max-w-7xl px-4 py-24 md:px-6 md:py-32">
+        <div className="grid gap-6 lg:grid-cols-12">
+          <SectionHeading id="competenze-titolo" className="lg:col-span-6">
+            {headings.skills}
+          </SectionHeading>
+          <Reveal className="lg:col-span-5 lg:col-start-8 lg:self-end">
+            <p className="max-w-[48ch] text-lg leading-relaxed text-muted">{headings.skillsBody}</p>
+          </Reveal>
+        </div>
 
-      <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-6 md:gap-5">
-        {/* Backend: cella larga con immagine */}
-        <Reveal className="md:col-span-4">
-          <SpotlightCell className="min-h-[380px] border-transparent text-white">
-            <img
-              src="https://picsum.photos/id/26/1400/800"
-              alt=""
-              loading="lazy"
-              className="absolute inset-0 -z-20 size-full object-cover"
-            />
-            <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-[#0f0f10]/95 via-[#0f0f10]/70 to-[#0f0f10]/50" />
-            <Years area={backend} light />
-            <AreaText area={backend} light />
-          </SpotlightCell>
-        </Reveal>
+        {/* Una vera tabella: area, anni, cosa ci faccio, strumenti. */}
+        <table className="mt-14 w-full border-collapse text-left">
+          <caption className="sr-only">Competenze per area, con anni di esperienza e strumenti</caption>
+          <thead className="hidden md:table-header-group">
+            <tr className="border-b border-fg/25 text-sm text-muted">
+              <th scope="col" className="pb-3 pr-6 font-medium">
+                Area
+              </th>
+              <th scope="col" className="pb-3 pr-6 font-medium">
+                Esperienza
+              </th>
+              <th scope="col" className="pb-3 pr-6 font-medium">
+                Cosa ci faccio
+              </th>
+              <th scope="col" className="pb-3 font-medium">
+                Strumenti
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {skillAreas.map((area, i) => (
+              <m.tr
+                key={area.title}
+                initial="off"
+                whileInView="on"
+                viewport={{ once: true, amount: 0.6 }}
+                variants={{ off: { opacity: 0, y: 14 }, on: { opacity: 1, y: 0 } }}
+                transition={{ duration: 0.5, ease: easeOut, delay: i * 0.06 }}
+                className="group grid gap-3 border-b border-line py-6 md:table-row"
+              >
+                <th
+                  scope="row"
+                  className="pr-6 align-top text-2xl font-bold font-stretch-[112%] transition-colors duration-200 group-hover:text-accent md:py-6"
+                >
+                  {area.title}
+                </th>
+                <td className="pr-6 align-top md:py-6 md:pt-8">
+                  <YearsMeter years={area.years} delay={i * 0.06} />
+                </td>
+                <td className="max-w-[44ch] pr-6 align-top leading-relaxed text-muted md:py-6">{area.body}</td>
+                <td className="align-top md:py-6">
+                  <ul className="flex flex-wrap gap-1.5">
+                    {area.tools.map((tool) => (
+                      <li key={tool} className="rounded-full bg-surface-2 px-3 py-1 text-sm font-medium">
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+              </m.tr>
+            ))}
+          </tbody>
+        </table>
 
-        {/* Frontend: gradiente nel colore d'accento */}
-        <Reveal className="md:col-span-2" delay={0.08}>
-          <SpotlightCell className="min-h-[380px] bg-surface bg-[radial-gradient(120%_90%_at_100%_0%,color-mix(in_srgb,var(--accent)_28%,transparent),transparent_60%)]">
-            <Years area={frontend} />
-            <AreaText area={frontend} />
-          </SpotlightCell>
-        </Reveal>
-
-        {/* Hypermedia: demo interattiva */}
-        <Reveal className="md:col-span-3" delay={0.04}>
-          <SpotlightCell className="bg-surface">
-            <Years area={hypermedia} />
-            <AreaText area={hypermedia} />
-            <HtmxDemo />
-          </SpotlightCell>
-        </Reveal>
-
-        {/* Fondamenta: trama a punti */}
-        <Reveal className="md:col-span-3" delay={0.12}>
-          <SpotlightCell className="bg-surface bg-[radial-gradient(var(--line)_1.2px,transparent_1.2px)] [background-size:18px_18px]">
-            <Years area={basi} />
-            <AreaText area={basi} />
-          </SpotlightCell>
-        </Reveal>
-
-        {/* Server e stampa: riga intera con il logo Debian come filigrana */}
-        <Reveal className="md:col-span-6" delay={0.08}>
-          <SpotlightCell className="bg-surface">
-            <BrandLogo
-              name="Debian"
-              slug="debian"
-              className="absolute -bottom-10 -right-6 -z-10 size-56 bg-accent/15 md:-bottom-16 md:right-10 md:size-80"
-            />
-            <Years area={server} />
-            <AreaText area={server} />
-          </SpotlightCell>
-        </Reveal>
+        <h3 className="mt-24 text-2xl font-bold font-stretch-[112%] md:text-3xl">{headings.strengths}</h3>
+        <ul className="mt-8 grid gap-5 md:grid-cols-3">
+          {strengths.map((item, i) => (
+            <m.li
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6, ease: easeOut, delay: i * 0.1 }}
+            >
+              {/* Nessuna inclinazione: solo la luce che segue il cursore. */}
+              <TiltCard max={0} scale={1} className="h-full overflow-hidden rounded-[24px]">
+                <div className="h-full rounded-[24px] border border-line bg-bg p-7 transition-colors duration-300 hover:border-accent/50">
+                  <p className="text-xl font-bold font-stretch-[108%]">{item.title}</p>
+                  <p className="mt-3 max-w-[38ch] leading-relaxed text-muted">{item.body}</p>
+                </div>
+              </TiltCard>
+            </m.li>
+          ))}
+        </ul>
       </div>
     </section>
   );

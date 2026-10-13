@@ -1,34 +1,37 @@
-import { MotionConfig } from "motion/react";
+import { LazyMotion, MotionConfig, domAnimation } from "motion/react";
 import { Nav } from "./components/sections/Nav";
 import { Hero } from "./components/sections/Hero";
-import { LogoMarquee } from "./components/sections/LogoMarquee";
-import { Statement } from "./components/sections/Statement";
-import { Projects } from "./components/sections/Projects";
+import { TechBand } from "./components/sections/TechBand";
 import { Experience } from "./components/sections/Experience";
 import { Skills } from "./components/sections/Skills";
-import { Strengths } from "./components/sections/Strengths";
+import { Projects } from "./components/sections/Projects";
 import { Contact } from "./components/sections/Contact";
 import { Footer } from "./components/sections/Footer";
 
 /** La pagina è solo composizione: ogni sezione vive nel suo file. */
 export default function App() {
   return (
+    // LazyMotion + componenti `m`: carica solo le funzioni di animazione DOM usate.
     // reducedMotion="user": con "riduci movimento" attivo le animazioni diventano istantanee.
-    <MotionConfig reducedMotion="user">
-      <div className="grain overflow-x-clip">
+    <LazyMotion features={domAnimation} strict>
+      <MotionConfig reducedMotion="user">
+        <a
+          href="#esperienza"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-3 focus:z-50 focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-accent-fg"
+        >
+          Vai al contenuto
+        </a>
         <Nav />
-        <main>
+        <main className="overflow-x-clip">
           <Hero />
-          <LogoMarquee />
-          <Statement />
+          <TechBand />
           <Experience />
           <Skills />
           <Projects />
-          <Strengths />
           <Contact />
         </main>
         <Footer />
-      </div>
-    </MotionConfig>
+      </MotionConfig>
+    </LazyMotion>
   );
 }
