@@ -10,7 +10,7 @@ export const profile = {
   base: "Cuneo",
   intro:
     "Sviluppo applicazioni web aziendali con Django, Python e htmx da tre anni, con React da due. Seguo una funzionalità dal modello dati fino all'interfaccia.",
-  availability: "Aperto a nuove opportunità",
+  availability: "Due chiacchiere? Scrivimi",
   // Foto ritagliata su sfondo trasparente: compare nella hero e nella barra in alto.
   photo: "/ritratto.webp",
   email: "moldovanu.business@gmail.com",
@@ -98,11 +98,11 @@ export const headings = {
   skills: "Dal database all'interfaccia",
   skillsBody:
     "Scelgo lo strumento in base al problema. A volte serve un'interfaccia in React, altre volte bastano Django, un po' di HTML e qualche attributo htmx.",
-  strengths: "Cosa porto in un team",
+  strengths: "Come lavoro",
   projects: "Progetti",
-  contact: "Cerchi uno sviluppatore per il tuo team?",
+  contact: "Parliamo di codice, progetti o idee",
   contactBody:
-    "Sono aperto a posizioni da sviluppatore full-stack o backend. Scrivimi per un colloquio: ti rispondo io, direttamente.",
+    "Stai costruendo un prodotto web, cerchi qualcuno con cui confrontarti o vuoi solo dirmi cosa ne pensi del sito? Scrivimi: ti rispondo io, direttamente.",
 };
 
 /* ------------------------------------------------------------------ */

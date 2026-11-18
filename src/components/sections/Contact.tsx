@@ -22,7 +22,7 @@ function validate(values: Values): Errors {
   const errors: Errors = {};
   if (!values.name.trim()) errors.name = "Scrivi il tuo nome.";
   if (!EMAIL.test(values.email)) errors.email = "Inserisci un indirizzo email valido, ad esempio nome@azienda.it.";
-  if (values.message.trim().length < 10) errors.message = "Scrivi almeno 10 caratteri: azienda e posizione bastano.";
+  if (values.message.trim().length < 10) errors.message = "Scrivi almeno 10 caratteri: chi sei e di cosa vuoi parlare.";
   return errors;
 }
 
@@ -44,7 +44,7 @@ async function sendMessage(values: Values, website: string): Promise<{ ok: true 
 
 /** Se l'invio non riesce, lo stesso messaggio si può spedire dal proprio programma di posta. */
 function mailtoHref({ name, email, message }: Values) {
-  const subject = encodeURIComponent(`Opportunità di lavoro da ${name}`);
+  const subject = encodeURIComponent(`Messaggio dal sito da ${name}`);
   const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
   return `mailto:${profile.email}?subject=${subject}&body=${body}`;
 }
@@ -174,7 +174,7 @@ export function Contact() {
                 value={values.message}
                 onChange={update("message")}
                 error={errors.message}
-                hint="Azienda, posizione e come preferisci essere ricontattato."
+                hint="Chi sei, di cosa vuoi parlare e come preferisci essere ricontattato."
               />
 
               {/* Esca per i bot: fuori dallo schermo e fuori dall'ordine del tab. */}

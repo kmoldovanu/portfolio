@@ -68,10 +68,13 @@ export function Hero() {
             <span>
               <ScrambleText text={profile.role} delay={250} duration={1000} />, {profile.base}
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3 py-1 font-medium text-accent">
+            <a
+              href="#contatti"
+              className="inline-flex items-center gap-2 rounded-full bg-accent/12 px-3 py-1 font-medium text-accent transition-colors duration-200 hover:bg-accent/20"
+            >
               <span aria-hidden className="size-1.5 rounded-full bg-accent" />
               {profile.availability}
-            </span>
+            </a>
           </FadeUp>
 
           {/*
