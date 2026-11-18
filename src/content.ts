@@ -229,7 +229,7 @@ export const projects: Project[] = [
       "Cerca lavoro su sette fonti ufficiali in parallelo, scarta duplicati, truffe e annunci fuori portata, poi dà un punteggio a ogni offerta con Claude. Prepara CV e lettera su misura nella lingua dell'annuncio, con un controllo in codice che toglie tutto ciò che non è nel CV originale. Tracker delle candidature con promemoria, installabile sul telefono.",
     stack: ["Next.js 16", "TypeScript", "PostgreSQL", "Drizzle", "Claude API", "Zod", "Vitest", "PWA"],
     repo: "https://github.com/kmoldovanu/job-radar",
-    demo: "https://job-radar-km.vercel.app",
+    demo: "https://job-radar-km.vercel.app/demo",
     image: {
       src: "/progetti/jobradar.webp",
       alt: "JobRadar sul telefono: elenco delle offerte da vedere, con il punteggio AI di compatibilità",
