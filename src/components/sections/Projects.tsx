@@ -19,18 +19,19 @@ const linkClass =
 
 function ProjectCard({ project, index }: { project: Project; index: number }) {
   return (
-    <m.div {...cardIn(index)}>
-      <TiltCard className="h-full rounded-[28px]">
+    <m.div {...cardIn(index)} className={project.featured ? "md:col-span-2" : undefined}>
+      <TiltCard className="h-full rounded-[28px]" max={project.featured ? 3 : 7}>
         <article className="group relative flex h-full min-h-[22rem] flex-col overflow-hidden rounded-[28px] border border-line bg-surface p-7 transition-[border-color] duration-300 hover:border-accent/60 md:p-9">
           {/* Alone arancione che sale dal fondo al passaggio del mouse */}
           <span
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 translate-y-full bg-[radial-gradient(70%_100%_at_50%_100%,color-mix(in_srgb,var(--accent)_22%,transparent),transparent)] transition-transform duration-500 ease-out group-hover:translate-y-0"
           />
-          <h3 className="relative text-[clamp(1.6rem,2.6vw,2.2rem)] font-extrabold leading-tight tracking-[-0.02em] font-stretch-[115%]">
+          <p className="relative text-sm font-semibold uppercase tracking-[0.12em] text-accent">{project.kind}</p>
+          <h3 className="relative mt-3 text-[clamp(1.6rem,2.6vw,2.2rem)] font-extrabold leading-tight tracking-[-0.02em] font-stretch-[115%]">
             {project.title}
           </h3>
-          <p className="relative mt-4 max-w-[52ch] leading-relaxed text-muted">{project.summary}</p>
+          <p className={`relative mt-4 leading-relaxed text-muted ${project.featured ? "max-w-[68ch] md:text-lg" : "max-w-[52ch]"}`}>{project.summary}</p>
           <ul className="relative mt-auto flex flex-wrap gap-1.5 pt-8">
             {project.stack.map((tool) => (
               <li key={tool} className="rounded-full bg-surface-2 px-3 py-1 text-sm font-medium">

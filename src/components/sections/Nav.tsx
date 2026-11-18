@@ -37,8 +37,14 @@ export function Nav() {
     >
       <nav aria-label="Principale" className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 md:px-6">
         <a href="#top" className="flex items-center gap-3 font-bold font-stretch-[112%]">
-          <span aria-hidden className="grid size-9 place-items-center rounded-full bg-fg text-[0.8125rem] text-bg">
-            {profile.initials}
+          <span aria-hidden className="relative size-9 overflow-hidden rounded-full bg-accent">
+            <img
+              src={profile.photo}
+              alt=""
+              width={441}
+              height={673}
+              className="absolute inset-x-0 top-[6%] w-full"
+            />
           </span>
           <span className="hidden sm:inline">{profile.name}</span>
         </a>

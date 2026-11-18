@@ -11,10 +11,12 @@ export const profile = {
   intro:
     "Sviluppo applicazioni web aziendali con Django, Python e htmx da tre anni, con React da due. Seguo una funzionalità dal modello dati fino all'interfaccia.",
   availability: "Aperto a nuove opportunità",
-  // TODO: sostituisci con la tua email e i tuoi profili reali.
+  // Foto ritagliata su sfondo trasparente: compare nella hero e nella barra in alto.
+  photo: "/ritratto.webp",
+  // TODO: conferma l'email pubblica e il link LinkedIn.
   email: "ciao@example.com",
   links: [
-    { label: "GitHub", href: "https://github.com/" },
+    { label: "GitHub", href: "https://github.com/kmoldovanu" },
     { label: "LinkedIn", href: "https://www.linkedin.com/" },
   ],
   // TODO: link al CV in PDF (es. mettilo in /public/cv.pdf e scrivi "/cv.pdf").
@@ -204,30 +206,44 @@ export const strengths = [
 
 export type Project = {
   title: string;
+  /** Una riga sopra il titolo: che tipo di progetto è. */
+  kind: string;
   summary: string;
   stack: string[];
   repo?: string;
   demo?: string;
+  /** In evidenza: occupa tutta la riga. */
+  featured?: boolean;
 };
 
 /** Quanti spazi mostrare in tutto: quelli senza progetto diventano "in lavorazione". */
-export const projectSlots = 2;
+export const projectSlots = 3;
 
 export const projects: Project[] = [
   {
-    title: "Questo portfolio",
+    title: "JobRadar",
+    kind: "Web app con IA",
     summary:
-      "Animazioni legate allo scroll con Motion, tema chiaro e scuro, editor di codice che si scrive da solo. Con \"riduci movimento\" attivo tutto resta fermo e leggibile.",
-    stack: ["React 19", "TypeScript", "Tailwind CSS 4", "Motion", "Vite"],
-    // TODO: link al repository del portfolio.
-    repo: "",
+      "Cerca lavoro su sette fonti ufficiali in parallelo, scarta duplicati, truffe e annunci fuori portata, poi dà un punteggio a ogni offerta con Claude. Prepara CV e lettera su misura nella lingua dell'annuncio, con un controllo in codice che toglie tutto ciò che non è nel CV originale. Tracker delle candidature con promemoria, installabile sul telefono.",
+    stack: ["Next.js 16", "TypeScript", "PostgreSQL", "Drizzle", "Claude API", "Zod", "Vitest", "PWA"],
+    repo: "https://github.com/kmoldovanu/job-radar",
+    featured: true,
   },
-  // TODO: aggiungi qui i tuoi progetti. Esempio:
-  // {
-  //   title: "Nome progetto",
-  //   summary: "Cosa fa, in una o due frasi.",
-  //   stack: ["Django", "htmx"],
-  //   repo: "https://github.com/tuo-utente/progetto",
-  //   demo: "https://progetto.example.com",
-  // },
+  {
+    title: "dinomoldo.dev",
+    kind: "Sito per l'attività freelance",
+    summary:
+      "Sito vetrina one-page per la mia attività di sviluppo web. Frontend React con componenti shadcn/ui, backend Django REST che riceve le richieste dal form di contatto, le salva e le inoltra per email.",
+    stack: ["React", "Vite", "Tailwind CSS", "shadcn/ui", "Django REST", "Resend"],
+    repo: "https://github.com/kmoldovanu/dinomoldo-dev",
+    demo: "https://dinomoldo.dev",
+  },
+  {
+    title: "Questo portfolio",
+    kind: "Sito personale",
+    summary:
+      "Animazioni legate allo scroll con Motion, tema chiaro e scuro, griglia interattiva ed editor di codice che si scrive da solo. Con \"riduci movimento\" attivo tutto resta fermo e leggibile.",
+    stack: ["React 19", "TypeScript", "Tailwind CSS 4", "Motion", "Vite"],
+    repo: "https://github.com/kmoldovanu/portfolio",
+  },
 ];
