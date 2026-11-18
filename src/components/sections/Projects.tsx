@@ -17,40 +17,94 @@ const cardIn = (i: number) => ({
 const linkClass =
   "inline-flex min-h-11 items-center gap-1.5 font-semibold underline-offset-4 transition-colors duration-200 hover:text-accent hover:underline";
 
+/** Prima schermata del progetto: finestra del browser per i siti, cornice da telefono per le app mobile. */
+function ProjectShot({ project }: { project: Project }) {
+  const image = project.image!;
+  const img = (
+    <img
+      src={image.src}
+      alt={image.alt}
+      width={image.width}
+      height={image.height}
+      loading="lazy"
+      decoding="async"
+      className="block h-auto w-full"
+    />
+  );
+
+  if (project.featured) {
+    return (
+      <div className="relative mx-auto w-[min(17rem,78%)] rounded-[2.4rem] border border-line bg-code-bg p-2 shadow-[0_30px_60px_-30px_var(--shadow)] transition-transform duration-500 ease-out group-hover:-translate-y-1.5 md:mx-0 md:w-[17rem]">
+        <div className="overflow-hidden rounded-[2rem]">{img}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative overflow-hidden rounded-2xl border border-line bg-code-bg shadow-[0_24px_50px_-30px_var(--shadow)]">
+      <div aria-hidden className="flex h-7 items-center gap-1.5 bg-code-bar px-3">
+        <span className="size-2 rounded-full bg-code-dim/60" />
+        <span className="size-2 rounded-full bg-code-dim/60" />
+        <span className="size-2 rounded-full bg-code-dim/60" />
+      </div>
+      <div className="transition-transform duration-700 ease-out group-hover:scale-[1.03]">{img}</div>
+    </div>
+  );
+}
+
 function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const featured = project.featured && project.image;
+
   return (
     <m.div {...cardIn(index)} className={project.featured ? "md:col-span-2" : undefined}>
-      <TiltCard className="h-full rounded-[28px]" max={project.featured ? 3 : 7}>
-        <article className="group relative flex h-full min-h-[22rem] flex-col overflow-hidden rounded-[28px] border border-line bg-surface p-7 transition-[border-color] duration-300 hover:border-accent/60 md:p-9">
+      <TiltCard className="h-full rounded-[28px]" max={project.featured ? 3 : 6}>
+        <article
+          className={`group relative flex h-full flex-col overflow-hidden rounded-[28px] border border-line bg-surface p-7 transition-[border-color] duration-300 hover:border-accent/60 md:p-9 ${
+            featured ? "gap-10 md:flex-row md:items-center md:gap-14 lg:px-14" : "gap-8"
+          }`}
+        >
           {/* Alone arancione che sale dal fondo al passaggio del mouse */}
           <span
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 translate-y-full bg-[radial-gradient(70%_100%_at_50%_100%,color-mix(in_srgb,var(--accent)_22%,transparent),transparent)] transition-transform duration-500 ease-out group-hover:translate-y-0"
           />
-          <p className="relative text-sm font-semibold uppercase tracking-[0.12em] text-accent">{project.kind}</p>
-          <h3 className="relative mt-3 text-[clamp(1.6rem,2.6vw,2.2rem)] font-extrabold leading-tight tracking-[-0.02em] font-stretch-[115%]">
-            {project.title}
-          </h3>
-          <p className={`relative mt-4 leading-relaxed text-muted ${project.featured ? "max-w-[68ch] md:text-lg" : "max-w-[52ch]"}`}>{project.summary}</p>
-          <ul className="relative mt-auto flex flex-wrap gap-1.5 pt-8">
-            {project.stack.map((tool) => (
-              <li key={tool} className="rounded-full bg-surface-2 px-3 py-1 text-sm font-medium">
-                {tool}
-              </li>
-            ))}
-          </ul>
-          {project.demo || project.repo ? (
-            <div className="relative mt-4 flex flex-wrap gap-5 text-[0.9375rem]">
-              {project.demo ? (
-                <a href={project.demo} target="_blank" rel="noreferrer" className={linkClass}>
-                  Apri la demo <ArrowUpRight size={16} weight="bold" aria-hidden />
-                </a>
-              ) : null}
-              {project.repo ? (
-                <a href={project.repo} target="_blank" rel="noreferrer" className={linkClass}>
-                  <GithubLogo size={18} aria-hidden /> Leggi il codice
-                </a>
-              ) : null}
+
+          {project.image && !featured ? <ProjectShot project={project} /> : null}
+
+          <div className="relative flex min-w-0 flex-1 flex-col">
+            <p className="text-[0.9375rem] font-medium text-accent">{project.kind}</p>
+            <h3 className="mt-2 text-[clamp(1.6rem,2.6vw,2.2rem)] font-extrabold leading-tight tracking-[-0.02em] font-stretch-[115%]">
+              {project.title}
+            </h3>
+            <p className={`mt-4 leading-relaxed text-muted ${featured ? "max-w-[60ch] md:text-lg" : "max-w-[52ch]"}`}>
+              {project.summary}
+            </p>
+            <ul className="mt-auto flex flex-wrap gap-1.5 pt-8">
+              {project.stack.map((tool) => (
+                <li key={tool} className="rounded-full bg-surface-2 px-3 py-1 text-sm font-medium">
+                  {tool}
+                </li>
+              ))}
+            </ul>
+            {project.demo || project.repo ? (
+              <div className="mt-4 flex flex-wrap gap-5 text-[0.9375rem]">
+                {project.demo ? (
+                  <a href={project.demo} target="_blank" rel="noreferrer" className={linkClass}>
+                    Apri la demo <ArrowUpRight size={16} weight="bold" aria-hidden />
+                  </a>
+                ) : null}
+                {project.repo ? (
+                  <a href={project.repo} target="_blank" rel="noreferrer" className={linkClass}>
+                    <GithubLogo size={18} aria-hidden /> Leggi il codice
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+
+          {featured ? (
+            <div className="relative shrink-0">
+              <ProjectShot project={project} />
             </div>
           ) : null}
         </article>

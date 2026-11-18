@@ -212,7 +212,9 @@ export type Project = {
   stack: string[];
   repo?: string;
   demo?: string;
-  /** In evidenza: occupa tutta la riga. */
+  /** Prima schermata del progetto, in /public/progetti. */
+  image?: { src: string; alt: string; width: number; height: number };
+  /** In evidenza: occupa tutta la riga, con l'immagine a destra in una cornice da telefono. */
   featured?: boolean;
 };
 
@@ -228,6 +230,12 @@ export const projects: Project[] = [
     stack: ["Next.js 16", "TypeScript", "PostgreSQL", "Drizzle", "Claude API", "Zod", "Vitest", "PWA"],
     repo: "https://github.com/kmoldovanu/job-radar",
     demo: "https://job-radar-km.vercel.app",
+    image: {
+      src: "/progetti/jobradar.webp",
+      alt: "JobRadar sul telefono: elenco delle offerte da vedere, con il punteggio AI di compatibilità",
+      width: 585,
+      height: 996,
+    },
     featured: true,
   },
   {
@@ -238,6 +246,12 @@ export const projects: Project[] = [
     stack: ["React", "Vite", "Tailwind CSS", "shadcn/ui", "Django REST", "Resend"],
     repo: "https://github.com/kmoldovanu/dinomoldo-dev",
     demo: "https://dinomoldo-dev.vercel.app",
+    image: {
+      src: "/progetti/dinomoldo.webp",
+      alt: "Prima schermata di dinomoldo.dev: soluzioni web professionali per attività locali",
+      width: 1200,
+      height: 750,
+    },
   },
   {
     title: "Questo portfolio",
@@ -246,5 +260,11 @@ export const projects: Project[] = [
       "Animazioni legate allo scroll con Motion, tema chiaro e scuro, griglia interattiva ed editor di codice che si scrive da solo. Con \"riduci movimento\" attivo tutto resta fermo e leggibile.",
     stack: ["React 19", "TypeScript", "Tailwind CSS 4", "Motion", "Vite"],
     repo: "https://github.com/kmoldovanu/portfolio",
+    image: {
+      src: "/progetti/portfolio.webp",
+      alt: "Prima schermata di questo portfolio in tema scuro, con il nome in grande e l'editor di codice",
+      width: 1200,
+      height: 750,
+    },
   },
 ];
