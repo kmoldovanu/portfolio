@@ -1,12 +1,11 @@
 import { useScroll, useTransform } from "motion/react";
 import * as m from "motion/react-m";
 import { useRef, type ReactNode } from "react";
-import { ArrowDown } from "@phosphor-icons/react/dist/csr/ArrowDown";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
-import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
 import { cta, profile } from "../../content";
 import { easeOut } from "../../lib/motion";
 import { Button } from "../ui/Button";
+import { CvDownload } from "../ui/CvDownload";
 import { CodeWindow } from "../ui/CodeWindow";
 import { KineticGrid } from "../ui/KineticGrid";
 import { PortraitBadge } from "../ui/PortraitBadge";
@@ -110,15 +109,7 @@ export function Hero() {
               <Button href="#contatti" icon={ArrowUpRight}>
                 {cta.contact}
               </Button>
-              {profile.cvUrl ? (
-                <Button href={profile.cvUrl} download variant="ghost" icon={DownloadSimple}>
-                  {cta.cv}
-                </Button>
-              ) : (
-                <Button href="#esperienza" variant="ghost" icon={ArrowDown}>
-                  {cta.experience}
-                </Button>
-              )}
+              <CvDownload />
             </FadeUp>
           </div>
 

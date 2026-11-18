@@ -2,9 +2,9 @@ import { useState, type ChangeEvent, type FormEvent } from "react";
 import * as m from "motion/react-m";
 import { ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { CheckCircle } from "@phosphor-icons/react/dist/csr/CheckCircle";
-import { DownloadSimple } from "@phosphor-icons/react/dist/csr/DownloadSimple";
-import { cta, headings, profile } from "../../content";
+import { headings, profile } from "../../content";
 import { Button } from "../ui/Button";
+import { CvDownload } from "../ui/CvDownload";
 import { Field } from "../ui/Field";
 import { Reveal } from "../ui/Reveal";
 import { ScrambleText } from "../ui/ScrambleText";
@@ -13,6 +13,7 @@ import { easeOut } from "../../lib/motion";
 
 type Values = { name: string; email: string; message: string };
 type Errors = Partial<Record<keyof Values, string>>;
+type Status = "idle" | "sending" | "sent" | "error";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const empty: Values = { name: "", email: "", message: "" };
@@ -25,36 +26,65 @@ function validate(values: Values): Errors {
   return errors;
 }
 
-/** Senza backend: il form apre il client di posta con il messaggio già compilato. */
-function openMailClient({ name, email, message }: Values) {
+/** Il messaggio parte dalla funzione /api/contact (vedi api/contact.ts), che lo inoltra per email. */
+async function sendMessage(values: Values, website: string): Promise<{ ok: true } | { ok: false; errors?: Errors }> {
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ ...values, website }),
+    });
+    if (res.ok) return { ok: true };
+    const body = await res.json().catch(() => ({}));
+    return { ok: false, errors: body.errors };
+  } catch {
+    return { ok: false };
+  }
+}
+
+/** Se l'invio non riesce, lo stesso messaggio si può spedire dal proprio programma di posta. */
+function mailtoHref({ name, email, message }: Values) {
   const subject = encodeURIComponent(`Opportunità di lavoro da ${name}`);
   const body = encodeURIComponent(`${message}\n\n${name}\n${email}`);
-  window.location.href = `mailto:${profile.email}?subject=${subject}&body=${body}`;
+  return `mailto:${profile.email}?subject=${subject}&body=${body}`;
 }
 
 export function Contact() {
   const [values, setValues] = useState<Values>(empty);
   const [errors, setErrors] = useState<Errors>({});
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>("idle");
+  // Campo esca per i bot, invisibile alle persone.
+  const [website, setWebsite] = useState("");
 
   const update = (key: keyof Values) => (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const value = e.target.value;
     setValues((v) => ({ ...v, [key]: value }));
     setErrors((err) => (err[key] ? { ...err, [key]: undefined } : err));
+    if (status === "error") setStatus("idle");
   };
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault();
+    if (status === "sending") return;
     const found = validate(values);
     setErrors(found);
     if (Object.keys(found).length > 0) return;
-    openMailClient(values);
-    setSent(true);
+
+    setStatus("sending");
+    const result = await sendMessage(values, website);
+    if (result.ok) {
+      setStatus("sent");
+    } else if (result.errors) {
+      setErrors(result.errors);
+      setStatus("idle");
+    } else {
+      setStatus("error");
+    }
   };
 
   const reset = () => {
     setValues(empty);
-    setSent(false);
+    setStatus("idle");
   };
 
   return (
@@ -83,17 +113,13 @@ export function Contact() {
               </li>
             ))}
           </ul>
-          {profile.cvUrl ? (
-            <div className="mt-8">
-              <Button href={profile.cvUrl} download variant="ghost" icon={DownloadSimple}>
-                {cta.cv}
-              </Button>
-            </div>
-          ) : null}
+          <div className="mt-8">
+            <CvDownload />
+          </div>
         </div>
 
         <Reveal className="lg:col-span-6" delay={0.1}>
-          {sent ? (
+          {status === "sent" ? (
             <m.div
               role="status"
               initial={{ opacity: 0, scale: 0.96 }}
@@ -102,10 +128,9 @@ export function Contact() {
               className="flex min-h-[26rem] flex-col items-start justify-center rounded-[28px] border border-line bg-bg p-8 md:p-10"
             >
               <CheckCircle size={36} weight="fill" className="text-accent" aria-hidden />
-              <h3 className="mt-5 text-2xl font-bold font-stretch-[110%]">Messaggio pronto nella tua posta</h3>
+              <h3 className="mt-5 text-2xl font-bold font-stretch-[110%]">Messaggio inviato</h3>
               <p className="mt-3 max-w-[42ch] leading-relaxed text-muted">
-                Il tuo programma di posta si è aperto con il testo già compilato. Controlla e premi invia. Se non si è
-                aperto, scrivimi direttamente a {profile.email}.
+                Grazie, {values.name.trim().split(/\s+/)[0]}. Ti rispondo a {values.email} il prima possibile.
               </p>
               <button
                 type="button"
@@ -120,7 +145,8 @@ export function Contact() {
               onSubmit={submit}
               noValidate
               aria-label="Scrivimi"
-              className="grid gap-5 rounded-[28px] border border-line bg-bg p-6 md:p-9"
+              aria-busy={status === "sending"}
+              className="relative grid gap-5 rounded-[28px] border border-line bg-bg p-6 md:p-9"
             >
               <div className="grid gap-5 md:grid-cols-2">
                 <Field
@@ -150,9 +176,33 @@ export function Contact() {
                 error={errors.message}
                 hint="Azienda, posizione e come preferisci essere ricontattato."
               />
+
+              {/* Esca per i bot: fuori dallo schermo e fuori dall'ordine del tab. */}
+              <div aria-hidden className="absolute -left-[9999px] size-px overflow-hidden">
+                <label htmlFor="website">Sito web</label>
+                <input
+                  id="website"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
+
+              {status === "error" ? (
+                <p role="alert" className="rounded-xl border border-danger/50 px-4 py-3 text-[0.9375rem] leading-relaxed">
+                  Il messaggio non è partito. Riprova tra poco oppure{" "}
+                  <a href={mailtoHref(values)} className="font-semibold underline underline-offset-4 hover:text-accent">
+                    invialo dal tuo programma di posta
+                  </a>
+                  .
+                </p>
+              ) : null}
+
               <div>
-                <Button type="submit" icon={ArrowUpRight}>
-                  Prepara l'email
+                <Button type="submit" icon={ArrowUpRight} disabled={status === "sending"}>
+                  {status === "sending" ? "Invio in corso…" : "Invia il messaggio"}
                 </Button>
               </div>
             </form>

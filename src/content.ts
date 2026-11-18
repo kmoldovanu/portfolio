@@ -13,15 +13,16 @@ export const profile = {
   availability: "Aperto a nuove opportunità",
   // Foto ritagliata su sfondo trasparente: compare nella hero e nella barra in alto.
   photo: "/ritratto.webp",
-  // TODO: conferma l'email pubblica e il link LinkedIn.
-  email: "ciao@example.com",
+  email: "moldovanu.business@gmail.com",
   links: [
     { label: "GitHub", href: "https://github.com/kmoldovanu" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/konstantinos-moldovanu-a306aa389/" },
   ],
-  // TODO: link al CV in PDF (es. mettilo in /public/cv.pdf e scrivi "/cv.pdf").
-  // Se resta vuoto, il pulsante "Scarica il CV" non compare.
-  cvUrl: "",
+  // CV in PDF dentro /public/cv. Il primo è quello principale, l'altro compare come link secondario.
+  cv: {
+    main: { href: "/cv/Konstantinos-Moldovanu-CV.pdf", label: "Scarica il CV" },
+    alt: { href: "/cv/Konstantinos-Moldovanu-CV-EN.pdf", label: "English version", lang: "en" },
+  },
 };
 
 /** Voci di navigazione: l'id corrisponde all'id della sezione. */
@@ -35,7 +36,6 @@ export const nav = [
 export const cta = {
   contact: "Contattami",
   experience: "Vedi l'esperienza",
-  cv: "Scarica il CV",
 };
 
 /** Le tecnologie della fascia che scorre con la pagina. */
@@ -102,7 +102,7 @@ export const headings = {
   projects: "Progetti",
   contact: "Cerchi uno sviluppatore per il tuo team?",
   contactBody:
-    "Sono aperto a posizioni da sviluppatore full-stack o backend. Scrivimi per un colloquio o per ricevere il mio CV.",
+    "Sono aperto a posizioni da sviluppatore full-stack o backend. Scrivimi per un colloquio: ti rispondo io, direttamente.",
 };
 
 /* ------------------------------------------------------------------ */
@@ -227,6 +227,7 @@ export const projects: Project[] = [
       "Cerca lavoro su sette fonti ufficiali in parallelo, scarta duplicati, truffe e annunci fuori portata, poi dà un punteggio a ogni offerta con Claude. Prepara CV e lettera su misura nella lingua dell'annuncio, con un controllo in codice che toglie tutto ciò che non è nel CV originale. Tracker delle candidature con promemoria, installabile sul telefono.",
     stack: ["Next.js 16", "TypeScript", "PostgreSQL", "Drizzle", "Claude API", "Zod", "Vitest", "PWA"],
     repo: "https://github.com/kmoldovanu/job-radar",
+    demo: "https://job-radar-km.vercel.app",
     featured: true,
   },
   {
@@ -236,7 +237,7 @@ export const projects: Project[] = [
       "Sito vetrina one-page per la mia attività di sviluppo web. Frontend React con componenti shadcn/ui, backend Django REST che riceve le richieste dal form di contatto, le salva e le inoltra per email.",
     stack: ["React", "Vite", "Tailwind CSS", "shadcn/ui", "Django REST", "Resend"],
     repo: "https://github.com/kmoldovanu/dinomoldo-dev",
-    demo: "https://dinomoldo.dev",
+    demo: "https://dinomoldo-dev.vercel.app",
   },
   {
     title: "Questo portfolio",
