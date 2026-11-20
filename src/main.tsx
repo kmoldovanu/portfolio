@@ -5,6 +5,9 @@ import "@fontsource-variable/archivo/wdth.css";
 import "@fontsource-variable/geist-mono";
 import "./index.css";
 import App from "./App";
+import { rememberVisit } from "./lib/track";
+
+rememberVisit();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

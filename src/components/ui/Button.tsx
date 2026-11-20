@@ -45,7 +45,7 @@ export function Button({
   );
 
   return href ? (
-    <a href={href} download={download} className={classes}>
+    <a href={href} download={download} onClick={onClick} className={classes}>
       {content}
     </a>
   ) : (

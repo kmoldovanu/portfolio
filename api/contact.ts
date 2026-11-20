@@ -14,8 +14,8 @@
 // Il progetto non installa @types/node: basta dichiarare la parte di `process` che serve qui.
 declare const process: { env: Record<string, string | undefined> };
 
-const DEFAULT_TO = "moldovanu.business@gmail.com";
-const DEFAULT_FROM = "Portfolio <onboarding@resend.dev>";
+export const DEFAULT_TO = "moldovanu.business@gmail.com";
+export const DEFAULT_FROM = "Portfolio <onboarding@resend.dev>";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Payload = { name?: unknown; email?: unknown; message?: unknown; website?: unknown };
