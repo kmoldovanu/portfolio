@@ -111,9 +111,9 @@ export const headings = {
 
 /** Tappe in ordine cronologico. */
 export const milestones = [
-  { year: "2023", text: "Entro in Datafood: sviluppo full-stack con Python, Django, JavaScript, HTML e CSS." },
-  { year: "2024", text: "Porto React nel lavoro quotidiano e seguo anche i server Debian presso i clienti." },
-  { year: "Oggi", text: "Sviluppo applicazioni web aziendali dal back-end all'interfaccia, con l'IA come supporto al lavoro." },
+  { year: "2023", text: "Entro in Datafood come tirocinante: sviluppo full-stack con Python, Django, JavaScript, HTML e CSS." },
+  { year: "2024", text: "Inizio l'apprendistato, porto React nel lavoro quotidiano e seguo i server Debian presso i clienti." },
+  { year: "Oggi", text: "3 applicazioni in produzione e circa 10 clienti seguiti direttamente, dal back-end all'interfaccia." },
 ];
 
 export type Job = {
@@ -134,13 +134,13 @@ export const jobs: Job[] = [
     company: "Datafood Srl",
     location: "Cuneo",
     summary:
-      "Sviluppo e manutenzione di applicazioni web aziendali: nuove funzionalità, risoluzione di bug e ottimizzazione delle performance.",
+      "Sviluppo e manutenzione di applicazioni web aziendali: nuove funzionalità, risoluzione di bug e ottimizzazione delle performance. Prima in tirocinio, dal 2024 in apprendistato.",
     highlights: [
-      "Back-end in Python e Django, front-end in React, htmx, JavaScript, HTML e CSS.",
-      "Collaborazione con il team di progettazione per un'esperienza utente coerente.",
-      "Configurazione e deploy di server Debian per usare le applicazioni direttamente presso i clienti.",
-      "Strumenti di IA come ChatGPT e Claude per risolvere i problemi più in fretta e migliorare il codice.",
-      "Integrazione della stampa con BarTender e NiceLabel e assistenza tecnica ai clienti.",
+      "3 applicazioni in produzione, 2 in Django e 1 in React: back-end in Python e Django, front-end in React, htmx, JavaScript, HTML e CSS.",
+      "Referente tecnico diretto per circa 10 clienti: configurazione dei server Debian e deploy delle applicazioni nelle loro sedi.",
+      "Collaborazione con il team di progettazione su interfaccia ed esperienza utente.",
+      "Claude e ChatGPT per accelerare sviluppo e debug, con revisione di tutto il codice prodotto.",
+      "Modelli di stampa etichette con BarTender e NiceLabel collegati a origini dati, con assistenza tecnica ai clienti.",
     ],
   },
 ];
