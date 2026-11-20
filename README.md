@@ -15,10 +15,11 @@ Sito personale di Konstantinos Moldovanu, sviluppatore web full-stack a Cuneo (P
 - **Accessibilità**: con "riduci movimento" attivo tutto resta fermo, focus sempre visibile, link per saltare al contenuto, form con errori collegati ai campi.
 - **Form di contatto funzionante**: una funzione serverless su Vercel valida il messaggio e lo inoltra per email con Resend. Un campo esca blocca i bot; se l'invio fallisce il messaggio si può mandare dal proprio programma di posta.
 - **CV scaricabile** in italiano e in inglese.
+- **Statistiche delle visite** con Vercel Web Analytics, senza cookie.
 
 ## Stack
 
-React 19 · TypeScript · Vite · Tailwind CSS 4 · Motion · Phosphor Icons · funzione serverless Vercel + Resend
+React 19 · TypeScript · Vite · Tailwind CSS 4 · Motion · Phosphor Icons · funzione serverless Vercel + Resend · Vercel Web Analytics
 
 ## Avvio in locale
 
